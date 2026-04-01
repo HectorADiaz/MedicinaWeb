@@ -1,0 +1,129 @@
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.medicina-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.medicina-table th {
+  background-color: #f8f9fa;
+  color: var(--text-dark);
+  padding: 12px 15px;
+  font-weight: 600;
+}
+
+.medicina-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+  color: #444;
+}
+
+.medicina-table tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.medicina-table tbody tr:hover {
+  background-color: #f1f7ff;
+}
+
+.btn-track {
+  background: transparent;
+  border: 1px solid var(--primary-blue);
+  color: var(--primary-blue);
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.btn-track:hover {
+  background: var(--primary-blue);
+  color: white;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: var(--neutral-border);
+}
+
+.columns-table {
+  color: black;
+}
+
+.accion-table {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+}
+
+.contain-btn-add {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-add {
+  background: #fff;
+  color: var(--primary-blue);
+  border: 1px solid var(--primary-blue);
+  cursor: pointer;
+  font-size: 1.5rem;
+  transition: all 0.2s ease;
+  border-radius: 8px;
+  padding: 8px 24px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-add:hover {
+  background-color: #0069d9; 
+  color: #fff;
+}
+
+.btn-add:active {
+  transform: scale(0.98);
+}
+
+
+.btn-edit {
+  background: transparent;
+  border: 1px solid var(--secondary-gray);
+  color: var(--secondary-gray);
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: e-resize;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.btn-edit:hover {
+  background: var(--secondary-gray);
+  color: white;
+}
+.btn-edit{
+  cursor: pointer;
+}
+
+.btn-edit img {
+  width: 15px;
+  height: 15px
+}
+
+.table-header {
+  padding-bottom: .5rem;
+}

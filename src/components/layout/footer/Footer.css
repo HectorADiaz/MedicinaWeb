@@ -1,0 +1,31 @@
+
+.footer-container {
+  background-color: #f4f4f8;
+  border-top: 1px solid #ddd;
+  padding: 1rem;
+  text-align: center;
+  color: #333;
+  font-size: 0.9rem;
+}
+
+.footer-container p {
+  margin: 0.25rem 0;
+  height: 10%;
+}
+
+.footer-container a {
+  color: #646cff;
+  text-decoration: none;
+}
+
+.footer-container a:hover {
+  text-decoration: underline;
+}
+
+@media (prefers-color-scheme: dark) {
+  .footer-container {
+    background-color: #1a1a1a;
+    border-top: 1px solid #333;
+    color: rgba(255, 255, 255, 0.87);
+  }
+}

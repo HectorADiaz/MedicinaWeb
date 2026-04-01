@@ -1,0 +1,47 @@
+.layout-container {
+  display: flex;
+  flex-grow: 1;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.content-area {
+  flex-grow: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  background-color: #fff;
+}
+
+.mobile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #f4f4f8;
+  border-bottom: 1px solid #ddd;
+}
+
+.hamburger-button {
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.sidebar {
+  display: none;
+}
+
+.mobile-header {
+  display: flex;
+}
+
+@media (min-width: 768px) {
+  .sidebar {
+    display: block;
+  }
+
+  .mobile-header {
+    display: none;
+  }
+}

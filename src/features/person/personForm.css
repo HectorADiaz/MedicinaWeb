@@ -1,0 +1,132 @@
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input-group label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #4a5568;
+  margin-left: 4px;
+}
+
+.input-form {
+  padding: 0.75rem 1rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background-color: #f8fafc;
+}
+
+.input-form:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background-color: #fff;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.form-actions {
+    padding: 1rem 0;
+}
+
+.input-form.error {
+  border-color: #ef4444;
+  background-color: #fffafb;
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+.btn-add {
+  width: auto;
+  min-width: 150px;
+  padding: 0.6rem 2rem;  
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.1s ease, background-color 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.btn-add:hover {
+  background-color: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.btn-add:active {
+  transform: translateY(0px);
+}
+
+.btn-add:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+}
+.form-body {
+    padding: 1rem 1.5rem; 
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem; 
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 1.5rem 1.5rem 1.5rem; 
+}
+
+
+/* Botón de eliminar con estilo de advertencia */
+.btn-delete {
+  background-color: transparent;
+  color: #ef4444;
+  border: 1px solid #ef4444;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-right: auto;
+}
+
+.btn-delete:hover {
+  background-color: #f87272;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.1);
+  color: #fff;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end; 
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.btn-add.btn-edit {
+  background-color: transparent;
+  box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.2);
+  color: #f97316;
+  border: 1px solid #ef4444;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-add.btn-edit:hover {
+  background-color: #f97316;
+  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.1);
+  color: #fff;
+}
