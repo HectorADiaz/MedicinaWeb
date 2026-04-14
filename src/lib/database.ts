@@ -103,6 +103,7 @@ class MedicinaWebDB extends Dexie {
     super('MedicinaWebDB');
     this.version(1).stores({
       person: '++id, name, birthDate, email, phone, notes',
+      medication: '++id, name, brand, personCategoryId, AmountDosage, DosageId, route, prescriptionNotes',
     });
   }
 }
