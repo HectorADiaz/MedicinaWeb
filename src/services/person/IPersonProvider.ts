@@ -1,5 +1,5 @@
 // src/services/person/IPersonProvider.ts
-import { type Person } from '../../lib/database';
+import { type PersonDTO } from './types';
 
 export interface PersonStats {
   count: number;
@@ -8,13 +8,13 @@ export interface PersonStats {
 }
 
 export interface IPersonProvider {
-  getAll(): Promise<Person[]>;
+  getAll(): Promise<PersonDTO[]>;
 
-  getById(id: number): Promise<Person | undefined>;
+  getById(id: number): Promise<PersonDTO | undefined>;
  
-  create(person: Omit<Person, 'id'>): Promise<number | string>;
+  create(person: Omit<PersonDTO, 'id'>): Promise<number | string>;
 
-  update(person: Person): Promise<void>;
+  update(person: PersonDTO): Promise<void>;
 
   delete(id: number): Promise<void>;
 

@@ -19,7 +19,16 @@
   transition: all 0.2s ease;
   background-color: #f8fafc;
 }
-
+.error-banner {
+  background-color: #fee2e2;
+  color: #dc2626;
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  margin-bottom: 1rem;
+  border: 1px solid #fecaca;
+  font-size: 0.875rem;
+  text-align: center;
+}
 .input-form:focus {
   outline: none;
   border-color: #3b82f6;
