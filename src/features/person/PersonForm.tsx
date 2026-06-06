@@ -1,63 +1,79 @@
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { db, type Person } from '../../lib/database';
+import { usePeople } from '../../hooks/usePeople'; // Importamos el Hook
+import { PersonDTO } from '../../services/person/types'; // Importamos el DTO
 import '../../features/person/personForm.css';
-import { useEffect } from 'react';
-
-type PersonFormData = Omit<Person, 'id'>;
 
 interface PersonFormProps {
   onSuccess: () => void;
-  initialData?: Person | null ;
+  initialData?: PersonDTO | null; // Usamos DTO
   submitText?: string;
 }
 
 export const PersonForm = ({ onSuccess, initialData, submitText }: PersonFormProps) => {
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<PersonFormData>({
-    values: initialData || {name: '', birthDate: '', email: ''},
+  // 1. Extraemos las funciones del Hook
+  const { createPerson, updatePerson, deletePerson } = usePeople(false);
+  const [localError, setLocalError] = useState<string | null>(null);
+
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<PersonDTO>({
+    values: initialData || { name: '', birthDate: '', email: '' },
   });
 
   useEffect(() => {
     if (!initialData) {
       reset({ name: '', birthDate: '', email: '' });
     }
+    setLocalError(null);
   }, [initialData, reset]);
 
-  const onSubmit = async (data: PersonFormData) => {
-    try {
-      if(initialData?.id){
-        await db.person.update(initialData.id, data);
+  // 2. Nueva lógica de Guardado usando el Hook
+  const onSubmit = async (data: PersonDTO) => {
+    setLocalError(null);
+    let result;
+
+    if (initialData?.id) {
+      result = await updatePerson({ ...data, id: initialData.id });
+    } else {
+      result = await createPerson(data);
+    }
+
+    if (result.success) {
+      reset();
+      onSuccess();
+    } else {
+      // 3. Aquí es donde se atrapa el error de "Límite de 2"
+      setLocalError(result.message || "Error al procesar la solicitud");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!initialData?.id) return;
+
+    const confirmed = window.confirm(
+      `¿Estás seguro de eliminar a ${initialData.name}? Esta acción no se puede deshacer.`
+    );
+
+    if (confirmed) {
+      const result = await deletePerson(initialData.id);
+      if (result.success) {
         reset();
         onSuccess();
       } else {
-        await db.person.add(data);
-        reset();
-        onSuccess();
-       }
-    } catch (error) {
-      console.error('Error al guardar en MedicinaWeb:', error);
+        setLocalError("Error al eliminar");
+      }
     }
   };
-  const handleDelete = async () => {
-  if (initialData === null || initialData === undefined || initialData.id === undefined) {
-    return;
-  }
-    const confirmed = window.confirm(
-    `¿Estás seguro de eliminar a ${initialData?.name}? Esta acción no se puede deshacer.`
-  );
-    if(confirmed) {
-      try {
-        await db.person.delete(initialData?.id);
-        reset();
-        onSuccess();
-      } catch (error) {
-        console.error('Error al eliminar en MedicinaWeb:', error);
-      }
-    } 
-  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="form-person">
       
+      {/* 4. Banner de Error para el Límite */}
+      {localError && (
+        <div className="error-banner">
+          {localError}
+        </div>
+      )}
+
       <div className="form-body">
         <div className="input-group">
           <label>Nombre Completo</label>
@@ -95,16 +111,14 @@ export const PersonForm = ({ onSuccess, initialData, submitText }: PersonFormPro
           </button>
         )}
 
-        <button type="submit" 
-        className={`btn-add ${initialData?.id ? 'btn-edit' : ''}`}
-        disabled={isSubmitting}>
-          {isSubmitting 
-            ? 'Guardando...' 
-            : submitText 
-          }   
+        <button 
+          type="submit" 
+          className={`btn-add ${initialData?.id ? 'btn-edit' : ''}`}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Guardando...' : (submitText || 'Guardar')}   
         </button>
       </div>
-
     </form>
   );
 };
