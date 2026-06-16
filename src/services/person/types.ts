@@ -1,12 +1,6 @@
-export interface PersonDTO {
-  id?: number;
-  name: string;
-  birthDate: string;
-  email: string;
-}
-
-export interface PersonStats {
-  count: number;
-  limit: number;
-  isFull: boolean;
-}
+// Re-exporta los tipos del API para uso en servicios y componentes
+export type {
+  PersonReadDto,
+  PersonCreateDto,
+  PersonUpdateDto,
+} from '../../types/person.types';

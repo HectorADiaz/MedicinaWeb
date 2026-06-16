@@ -1,23 +1,19 @@
 import { useState } from 'react';
-import { usePeople } from '../../hooks/usePeople'; 
+import { usePeople } from '../../hooks/usePeople';
 import { Modal } from '../../components/common/Modal';
 import { PersonForm } from './PersonForm';
 import { UserPlus } from 'lucide-react';
-// ✅ CAMBIO: Importamos PersonDTO de los tipos del servicio, no de la DB
-import { type PersonDTO } from '../../services/person/types'; 
+import type { PersonReadDto } from '../../services/person/types';
 import './PersonList.css';
 
 export const PersonList = () => {
-  // 1. Hook (maneja PersonDTO internamente)
-  const { people, isLoading, deletePerson } = usePeople(false);
+  const { people, isLoading, deletePerson } = usePeople();
 
-  // 2. Estados Locales (Usando el DTO)
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingPerson, setEditingPerson] = useState<PersonDTO | null>(null);
+  const [editingPerson, setEditingPerson] = useState<PersonReadDto | null>(null);
 
-  // 3. Helpers (Se mantienen igual, funcionan con strings/numbers)
-  const calculateAge = (birthDate: string): number => {
-    const birth = new Date(birthDate);
+  const calculateAge = (birthday: string): number => {
+    const birth = new Date(birthday);
     const today = new Date();
     let age = today.getFullYear() - birth.getFullYear();
     const monthDiff = today.getMonth() - birth.getMonth();
@@ -28,15 +24,14 @@ export const PersonList = () => {
   };
 
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('es-ES', { 
-      day: 'numeric', 
-      month: 'short', 
-      year: 'numeric' 
+    return new Date(dateStr).toLocaleDateString('es-ES', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
     });
   };
 
-  // 4. Handlers
-  const handleEdit = (person: PersonDTO) => {
+  const handleEdit = (person: PersonReadDto) => {
     setEditingPerson(person);
     setIsModalOpen(true);
   };
@@ -68,24 +63,28 @@ export const PersonList = () => {
           <thead>
             <tr className='columns-table'>
               <th>Nombre</th>
+              <th>Apellido</th>
               <th>Fecha de Nacimiento</th>
               <th>Edad</th>
               <th>Correo Electrónico</th>
+              <th>Teléfono</th>
               <th className='contain-btn-add'>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {people.map((person) => (
               <tr key={person.id}>
-                <td>{person.name}</td>
-                <td>{formatDate(person.birthDate)}</td>
-                <td>{calculateAge(person.birthDate)} años</td>
+                <td>{person.firstName}</td>
+                <td>{person.lastName}</td>
+                <td>{person.birthday ? formatDate(person.birthday) : '-'}</td>
+                <td>{person.birthday ? `${calculateAge(person.birthday)} años` : '-'}</td>
                 <td>{person.email}</td>
+                <td>{person.phone}</td>
                 <td className='accion-table'>
                   <button className="btn-edit" onClick={() => handleEdit(person)}>Editar</button>
                   <button className="btn-track">Ver Seguimiento</button>
-                  <button 
-                    className="btn-delete" 
+                  <button
+                    className="btn-delete"
                     onClick={() => person.id && deletePerson(person.id)}
                   >
                     Eliminar
@@ -96,14 +95,14 @@ export const PersonList = () => {
           </tbody>
         </table>
 
-        <Modal 
-          isOpen={isModalOpen} 
+        <Modal
+          isOpen={isModalOpen}
           onClose={closeModal}
-          title={editingPerson ? "Editar Perfil" : "Agregar Nueva Persona"}
+          title={editingPerson ? 'Editar Perfil' : 'Agregar Nueva Persona'}
         >
-          <PersonForm 
+          <PersonForm
             onSuccess={closeModal}
-            submitText={editingPerson ? "Guardar Cambios" : "Crear Nuevo Perfil"}
+            submitText={editingPerson ? 'Guardar Cambios' : 'Crear Nuevo Perfil'}
             initialData={editingPerson}
           />
         </Modal>

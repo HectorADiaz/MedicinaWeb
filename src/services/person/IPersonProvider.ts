@@ -1,22 +1,9 @@
-// src/services/person/IPersonProvider.ts
-import { type PersonDTO } from './types';
-
-export interface PersonStats {
-  count: number;
-  limit: number;
-  isFull: boolean;
-}
+import type { PersonReadDto, PersonCreateDto, PersonUpdateDto } from './types';
 
 export interface IPersonProvider {
-  getAll(): Promise<PersonDTO[]>;
-
-  getById(id: number): Promise<PersonDTO | undefined>;
- 
-  create(person: Omit<PersonDTO, 'id'>): Promise<number | string>;
-
-  update(person: PersonDTO): Promise<void>;
-
+  getAll(): Promise<PersonReadDto[]>;
+  getById(id: number): Promise<PersonReadDto | undefined>;
+  create(person: PersonCreateDto): Promise<PersonReadDto>;
+  update(person: PersonUpdateDto): Promise<void>;
   delete(id: number): Promise<void>;
-
-  getStats(): Promise<PersonStats>;
 }
