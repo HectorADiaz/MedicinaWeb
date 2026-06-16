@@ -26,9 +26,10 @@ export const usePeople = (isLoggedIn: boolean) => {
       setError(null);
       await provider.update(data);
       return { success: true };
-    } catch { // Sin (err), así no hay variable sin usar
-      setError("Error al actualizar el perfil");
-      return { success: false };
+    } catch {
+      const message = "Error al actualizar el perfil";
+      setError(message);
+      return { success: false, message };
     }
   };
 
@@ -37,9 +38,10 @@ export const usePeople = (isLoggedIn: boolean) => {
       setError(null);
       await provider.delete(id);
       return { success: true };
-    } catch { // Sin (err)
-      setError("No se pudo eliminar el perfil");
-      return { success: false };
+    } catch {
+      const message = "No se pudo eliminar el perfil";
+      setError(message);
+      return { success: false, message };
     }
   };
 

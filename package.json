@@ -15,11 +15,13 @@
     "vite": "^6.3.5"
   },
   "private": true,
+  "packageManager": "pnpm@11.5.1",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "preinstall": "node scripts/verify-package-age.mjs"
   },
   "type": "module",
   "dependencies": {

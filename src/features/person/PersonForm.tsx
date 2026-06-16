@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { usePeople } from '../../hooks/usePeople'; // Importamos el Hook
-import { PersonDTO } from '../../services/person/types'; // Importamos el DTO
+import type { PersonDTO } from '../../services/person/types'; // Importamos el DTO
 import '../../features/person/personForm.css';
 
 interface PersonFormProps {
