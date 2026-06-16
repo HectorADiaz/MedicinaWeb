@@ -21,12 +21,11 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "preinstall": "node scripts/verify-package-age.mjs"
+    "preinstall": "node scripts/verify-package-age.mjs",
+    "generate-types": "NODE_TLS_REJECT_UNAUTHORIZED=0 openapi-typescript https://localhost:5001/swagger/v1/swagger.json --output src/types/api-schema.ts"
   },
   "type": "module",
   "dependencies": {
-    "dexie": "^4.2.1",
-    "dexie-react-hooks": "^4.2.0",
     "lucide-react": "^0.577.0",
     "react": "18",
     "react-dom": "18",

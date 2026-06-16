@@ -1,56 +1,74 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { usePeople } from '../../hooks/usePeople'; // Importamos el Hook
-import type { PersonDTO } from '../../services/person/types'; // Importamos el DTO
+import { usePeople } from '../../hooks/usePeople';
+import type { PersonCreateDto, PersonUpdateDto, PersonReadDto } from '../../services/person/types';
 import '../../features/person/personForm.css';
+
+interface PersonFormData {
+  firstName: string;
+  lastName: string;
+  nickName: string;
+  birthday: string;
+  email: string;
+  phone: string;
+}
 
 interface PersonFormProps {
   onSuccess: () => void;
-  initialData?: PersonDTO | null; // Usamos DTO
+  initialData?: PersonReadDto | null;
   submitText?: string;
 }
 
 export const PersonForm = ({ onSuccess, initialData, submitText }: PersonFormProps) => {
-  // 1. Extraemos las funciones del Hook
-  const { createPerson, updatePerson, deletePerson } = usePeople(false);
+  const { createPerson, updatePerson, deletePerson } = usePeople();
   const [localError, setLocalError] = useState<string | null>(null);
 
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<PersonDTO>({
-    values: initialData || { name: '', birthDate: '', email: '' },
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<PersonFormData>({
+    values: initialData
+      ? {
+          firstName: initialData.firstName ?? '',
+          lastName: initialData.lastName ?? '',
+          nickName: initialData.nickName ?? '',
+          birthday: initialData.birthday?.split('T')[0] ?? '',
+          email: initialData.email ?? '',
+          phone: initialData.phone ?? '',
+        }
+      : { firstName: '', lastName: '', nickName: '', birthday: '', email: '', phone: '' },
   });
 
   useEffect(() => {
     if (!initialData) {
-      reset({ name: '', birthDate: '', email: '' });
+      reset({ firstName: '', lastName: '', nickName: '', birthday: '', email: '', phone: '' });
     }
     setLocalError(null);
   }, [initialData, reset]);
 
-  // 2. Nueva lógica de Guardado usando el Hook
-  const onSubmit = async (data: PersonDTO) => {
+  const onSubmit = async (data: PersonFormData) => {
     setLocalError(null);
     let result;
 
     if (initialData?.id) {
-      result = await updatePerson({ ...data, id: initialData.id });
+      const updateDto: PersonUpdateDto = { id: initialData.id, ...data };
+      result = await updatePerson(updateDto);
     } else {
-      result = await createPerson(data);
+      const createDto: PersonCreateDto = data;
+      result = await createPerson(createDto);
     }
 
     if (result.success) {
       reset();
       onSuccess();
     } else {
-      // 3. Aquí es donde se atrapa el error de "Límite de 2"
-      setLocalError(result.message || "Error al procesar la solicitud");
+      setLocalError(result.message || 'Error al procesar la solicitud');
     }
   };
 
   const handleDelete = async () => {
     if (!initialData?.id) return;
 
+    const fullName = `${initialData.firstName ?? ''} ${initialData.lastName ?? ''}`.trim();
     const confirmed = window.confirm(
-      `¿Estás seguro de eliminar a ${initialData.name}? Esta acción no se puede deshacer.`
+      `¿Estás seguro de eliminar a ${fullName}? Esta acción no se puede deshacer.`
     );
 
     if (confirmed) {
@@ -59,15 +77,13 @@ export const PersonForm = ({ onSuccess, initialData, submitText }: PersonFormPro
         reset();
         onSuccess();
       } else {
-        setLocalError("Error al eliminar");
+        setLocalError('Error al eliminar');
       }
     }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="form-person">
-      
-      {/* 4. Banner de Error para el Límite */}
       {localError && (
         <div className="error-banner">
           {localError}
@@ -76,30 +92,56 @@ export const PersonForm = ({ onSuccess, initialData, submitText }: PersonFormPro
 
       <div className="form-body">
         <div className="input-group">
-          <label>Nombre Completo</label>
-          <input 
-            className={`input-form ${errors.name ? 'error' : ''}`}
-            {...register('name', { required: 'El nombre es obligatorio' })} 
+          <label>Nombre</label>
+          <input
+            className={`input-form ${errors.firstName ? 'error' : ''}`}
+            {...register('firstName', { required: 'El nombre es obligatorio' })}
           />
-          {errors.name && <span className="error-message">{errors.name.message}</span>}
+          {errors.firstName && <span className="error-message">{errors.firstName.message}</span>}
+        </div>
+
+        <div className="input-group">
+          <label>Apellido</label>
+          <input
+            className={`input-form ${errors.lastName ? 'error' : ''}`}
+            {...register('lastName', { required: 'El apellido es obligatorio' })}
+          />
+          {errors.lastName && <span className="error-message">{errors.lastName.message}</span>}
+        </div>
+
+        <div className="input-group">
+          <label>Apodo</label>
+          <input
+            className="input-form"
+            {...register('nickName')}
+          />
         </div>
 
         <div className="input-group">
           <label>Fecha de Nacimiento</label>
-          <input 
+          <input
             type="date"
-            max={new Date().toISOString().split("T")[0]}
-            className={`input-form ${errors.birthDate ? 'error' : ''}`}
-            {...register('birthDate', { required: 'La fecha de nacimiento es obligatoria' })} 
+            max={new Date().toISOString().split('T')[0]}
+            className={`input-form ${errors.birthday ? 'error' : ''}`}
+            {...register('birthday', { required: 'La fecha de nacimiento es obligatoria' })}
           />
         </div>
 
         <div className="input-group">
           <label>Correo Electrónico</label>
-          <input 
+          <input
             type="email"
             className={`input-form ${errors.email ? 'error' : ''}`}
-            {...register('email', { required: 'El correo es obligatorio' })} 
+            {...register('email', { required: 'El correo es obligatorio' })}
+          />
+        </div>
+
+        <div className="input-group">
+          <label>Teléfono</label>
+          <input
+            type="tel"
+            className="input-form"
+            {...register('phone')}
           />
         </div>
       </div>
@@ -111,12 +153,12 @@ export const PersonForm = ({ onSuccess, initialData, submitText }: PersonFormPro
           </button>
         )}
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className={`btn-add ${initialData?.id ? 'btn-edit' : ''}`}
           disabled={isSubmitting}
         >
-          {isSubmitting ? 'Guardando...' : (submitText || 'Guardar')}   
+          {isSubmitting ? 'Guardando...' : (submitText || 'Guardar')}
         </button>
       </div>
     </form>

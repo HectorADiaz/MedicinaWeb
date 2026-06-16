@@ -1,33 +1,51 @@
-import { useState } from 'react';
-import { useLiveQuery } from 'dexie-react-hooks';
-import { getPersonProvider } from '../services/person';
-import { type PersonDTO } from '../services/person/types';
+import { useState, useEffect, useCallback } from 'react';
+import { personProvider } from '../services/person';
+import type { PersonReadDto, PersonCreateDto, PersonUpdateDto } from '../services/person/types';
 
-export const usePeople = (isLoggedIn: boolean) => {
+export function usePeople() {
+  const [people, setPeople] = useState<PersonReadDto[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const provider = getPersonProvider(isLoggedIn);
 
-  const people = useLiveQuery(() => provider.getAll(), [isLoggedIn]) || [];
+  const fetchPeople = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+      const data = await personProvider.getAll();
+      setPeople(data);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Error al cargar perfiles';
+      setError(message);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
-  const createPerson = async (data: Omit<PersonDTO, 'id'>) => {
+  useEffect(() => {
+    fetchPeople();
+  }, [fetchPeople]);
+
+  const createPerson = async (data: PersonCreateDto) => {
     try {
       setError(null);
-      await provider.create(data);
+      await personProvider.create(data);
+      await fetchPeople();
       return { success: true };
-    } catch (err: unknown) { // <-- Cambiamos any por unknown
-      const message = err instanceof Error ? err.message : "Error al crear el perfil";
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Error al crear el perfil';
       setError(message);
-      return { success: false, message};
+      return { success: false, message };
     }
   };
 
- const updatePerson = async (data: PersonDTO) => {
+  const updatePerson = async (data: PersonUpdateDto) => {
     try {
       setError(null);
-      await provider.update(data);
+      await personProvider.update(data);
+      await fetchPeople();
       return { success: true };
-    } catch {
-      const message = "Error al actualizar el perfil";
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Error al actualizar el perfil';
       setError(message);
       return { success: false, message };
     }
@@ -36,21 +54,15 @@ export const usePeople = (isLoggedIn: boolean) => {
   const deletePerson = async (id: number) => {
     try {
       setError(null);
-      await provider.delete(id);
+      await personProvider.delete(id);
+      await fetchPeople();
       return { success: true };
-    } catch {
-      const message = "No se pudo eliminar el perfil";
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'No se pudo eliminar el perfil';
       setError(message);
       return { success: false, message };
     }
   };
 
-  return {
-    people,
-    createPerson,
-    updatePerson,
-    deletePerson,
-    error,
-    isLoading: people === undefined
-  };
-};
+  return { people, isLoading, error, createPerson, updatePerson, deletePerson };
+}
